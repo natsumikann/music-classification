@@ -27,6 +27,7 @@ class SoundNet5Layer(chainer.Chain):
             self.conv5 = L.Convolution2D(256, self.SoundOutput, (1, 16),
                                          12, (0, 4))
             self.bn5 = L.BatchNormalization(self.SoundOutput) #２次元で出力 Linear 第一引数 none
+            self.l1 = L.Linear(None, 2)
 
     def __call__(self, sound):
         h = F.relu(self.bn1(self.conv1(sound)))

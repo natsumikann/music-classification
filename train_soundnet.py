@@ -11,11 +11,10 @@ from chainer.datasets import split_dataset_random
 from chainer.training import extensions
 
 from config import global_value
-from tools.Logger import Logger
-from net.Regressor import SoundNet5Layer
-from net.Regressor import SoundNet5LayerTrainer
-from net.Dataset import Dataset
-from net.Dataset import ValModeEvaluator
+from Regressor import SoundNet5Layer
+from Regressor import SoundNet5LayerTrainer
+from Dataset import Dataset
+from Dataset import ValModeEvaluator
 
 
 def parse():
@@ -31,12 +30,9 @@ def parse():
 
 if __name__ == '__main__':
     args = parse()
-    logger = Logger(args.out)
-    logger.log_args(args)
 
     # グローバル変数定義
     global_value.initialize()
-    logger.log_globals(global_value)
 
     # データセットイテレーターの定義
     debug_mode = args.dry_run
