@@ -20,7 +20,7 @@ class MyCifarDataset(chainer.dataset.DatasetMixin):
             'ship': 8,
             'truck': 9
         }
-        self._paths = glob('./mini_cifar/train/*/*.png')
+        self._paths = glob('./mini_cifar/*/*/*.flac')
 
     def __len__(self):
         """ データセットの数を返す関数 """

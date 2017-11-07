@@ -6,6 +6,8 @@ import numpy as np
 
 MODEL = VGG16Layers()
 
+#trainデータを入れるディレクトリのパス
+TRAIN_PATH = ""
 
 def _create_db(paths, gpu):
     if gpu >= 0:
@@ -29,7 +31,7 @@ def _create_db(paths, gpu):
 def create_db(dir, gpu):
     from glob import glob
     import os
-    paths = glob(os.path.join(dir, '*/*.png'))
+    paths = glob(os.path.join(dir, '*/*/*.flac'))
     assert len(paths) != 0
     if not os.path.exists('db'):
         os.mkdir('db')
@@ -41,7 +43,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Practice: search')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
-    parser.add_argument('--dataset', '-d', default='mini_cifar/train',
+    parser.add_argument('--dataset', '-d', default=TRAIN_PATH,
                         help='Directory for train mini_cifar')
     args = parser.parse_args()
     create_db(args.dataset, args.gpu)
