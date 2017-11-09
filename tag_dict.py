@@ -23,6 +23,10 @@ def write_csv():
 
     print(audio)
 
+def count_data():
+    files = glob.glob(path + '*/*/*.flac')
+    return len(files)
+
 def read_csv():
     data = {}
     with open('tag_dict.csv', 'r') as f:

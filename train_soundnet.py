@@ -10,6 +10,7 @@ from chainer import training
 from chainer.datasets import split_dataset_random
 from chainer.training import extensions
 
+from tag_dict import count_data
 from Regressor import SoundNet5Layer
 from Regressor import SoundNet5LayerTrainer
 from Dataset_ta import Dataset
@@ -35,7 +36,8 @@ if __name__ == '__main__':
     debug_mode = args.dry_run
     train_dir = '/music'
     train = Dataset(train_dir, debug_mode, False)
-    train, val = split_dataset_random(train, 1800)
+    data_num = count_data()
+    train, val = split_dataset_random(train, data_num/2)
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
     train_iter = chainer.iterators.MultiprocessIterator(
