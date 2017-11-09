@@ -63,32 +63,3 @@ class SoundNet5Layer(chainer.Chain):
 
     def predict(self, x):
         return F.argmax(self(x), axis=1).data
-
-
-# class SoundNet5LayerTrainer(chainer.Chain):
-#     def __init__(self, sound_net_5_layer, out_num):
-#         super().__init__()
-#         with self.init_scope():
-#             self.model = sound_net_5_layer
-#             self.fc1 = L.Linear(RegressorOutputValues.SoundOutput, 100)
-#             self.fc2 = L.Linear(100, out_num)
-#
-#     def __call__(self, x, t):
-#         h = F.relu(self.fc1(self.model(x)))
-#         h = F.softmax(self.fc2(h))
-#
-#         t = self.xp.asarray(t, self.xp.int32)
-#         loss = F.softmax_cross_entropy(h, t)
-#         accuracy = F.accuracy(h, t)
-#         chainer.report({'loss': loss}, self)
-#         chainer.report({'accuracy': accuracy}, self)
-#         if chainer.config.train:
-#             return loss
-#         return h
-#
-#     def predict(self, x):
-#         h = F.relu(self.fc1(self.model(x)))
-#         h = F.softmax(self.fc2(h))
-#         return F.softmax(h, axis=1)
-#
-#

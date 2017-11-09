@@ -22,6 +22,8 @@ def parse():
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
+    parser.add_argument('--dataset', '-d', default='/music',
+                        help='Directory for train sound_net')
     parser.add_argument('--resume', type=str, default='')
     parser.add_argument('--dry_run', action='store_true', default=False)
     return parser.parse_args()
@@ -33,7 +35,7 @@ if __name__ == '__main__':
 
     # データセットイテレーターの定義
     debug_mode = args.dry_run
-    train_dir = '/music'
+    train_dir = args.dataset
     train = Dataset(train_dir, debug_mode, True)
     data_num = count_data()
     print(data_num)
