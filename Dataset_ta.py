@@ -22,8 +22,9 @@ class Dataset(chainer.dataset.DatasetMixin):
     def __init__(self, root_dir, debug, print_name=False):
         self._paths = glob(os.path.join(root_dir, '*/*/*.flac'))
         self.tag_dict = read_csv()
-        self.labels = {file: self.tag_dict[FLAC(file)[TAG_FIELD]]
-                       for i, file in enumerate(self._paths)}
+        self.labels = {}
+        for file in self._paths:
+            self.labels[file] = self.tag_dict[FLAC(file)[TAG_FIELD]]
         self.debug = debug
         self.print_name = print_name
 
