@@ -104,5 +104,3 @@ if __name__ == '__main__':
             extensions.PlotReport(['main/accuracy', 'validation/main/accuracy'],
                                   'epoch', file_name='accuracy.png'),
             trigger=snapshot_interval)
-    with chainer.using_config('train', True):
-        trainer.run()
