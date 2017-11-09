@@ -12,14 +12,13 @@ from chainer.training import extensions
 
 from tag_dict import count_data
 from Regressor import SoundNet5Layer
-from Regressor import SoundNet5LayerTrainer
 from Dataset_ta import Dataset
 from Dataset_ta import ValModeEvaluator
 
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batchsize', type=int, default=4)
+    parser.add_argument('--batchsize', type=int, default=30)
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
@@ -54,25 +53,25 @@ if __name__ == '__main__':
     )
 
     # モデルの定義
-    model = SoundNet5Layer()
-    model_trainer = SoundNet5LayerTrainer(model, args.labels)
+    model = SoundNet5Layer(args.labels)
+    #model_trainer = SoundNet5LayerTrainer(model, args.labels) #trainer消してmodelにすれば良い
     if args.gpu >= 0:
         chainer.cuda.get_device_from_id(args.gpu).use()
-        model_trainer.to_gpu()
+        model.to_gpu()
 
     optimizer = chainer.optimizers.MomentumSGD(lr=1e-2)
-    optimizer.setup(model_trainer)
+    optimizer.setup(model)
     updater = training.StandardUpdater(
         train_iter, optimizer, device=args.gpu)
 
-    trainer = training.Trainer(updater, (1000, 'epoch'), args.out)
+    trainer = training.Trainer(updater, (1, 'epoch'), args.out) #num iof epoch 1 temporalily
 
     trainer.extend(extensions.ExponentialShift('lr', np.power(0.1, 1 / 30)),
                    trigger=(5, 'epoch'))
     snapshot_interval = 1, 'epoch'
     log_interval = 10, 'iteration'
     trainer.extend(
-        ValModeEvaluator(val_iter, model_trainer, device=args.gpu),
+        ValModeEvaluator(val_iter, model, device=args.gpu),
         trigger=(1, 'epoch'))
     trainer.extend(extensions.snapshot(), trigger=snapshot_interval)
     trainer.extend(extensions.snapshot_object(

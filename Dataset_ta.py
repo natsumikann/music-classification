@@ -20,8 +20,8 @@ GENRE_TO_VEC = {'rock': 0, 'pop': 1}
 class Dataset(chainer.dataset.DatasetMixin):
     SOUND_SHAPE = (1, 1, 5 * SAMPLE_RATE) #5 seconds
 
-    def __init__(self, root_dir, debug, print_name=False):
-        paths = glob(os.path.join(root_dir, '*/*/*.flac'))
+    def __init__(self, root_dir, debug=False, print_name=False):
+        paths = glob(os.path.join(root_dir, '*.flac'))
         self.tag_dict = read_csv()
         self._paths = []
         self.labels = {}

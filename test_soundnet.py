@@ -12,20 +12,21 @@ from Dataset_ta import Dataset
 
 def main():
     parser = argparse.ArgumentParser(description='Practice: SoundNet5Layer')
-    parser.add_argument('--batchsize', '-b', type=int, default=16,
+    parser.add_argument('--batchsize', '-b', type=int, default=4,
                         help='Number of songs in each mini-batch')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
-    parser.add_argument('--model', '-m', default='result/sound_net_1000',
+    parser.add_argument('--model', '-m', default='result/sound_net_1',
                         help='Path to the model')
-    parser.add_argument('--dataset', '-d', default='',
+    parser.add_argument('--dataset', '-d', default='/music/BON JOVI/Tokyo Road',
                         help='Directory for train sound_net')
+    parser.add_argument('--labels', type=int, default=2)
     args = parser.parse_args()
 
     print('GPU: {}'.format(args.gpu))
     print('')
 
-    model = SoundNet5Layer()
+    model = SoundNet5Layer(args.labels)
     chainer.serializers.load_npz(args.model, model)
 
     if args.gpu >= 0:
@@ -49,7 +50,8 @@ def main():
             break
         images = model.xp.array([image for image, _ in batch])
         labels = model.xp.array([label for _, label in batch])
-        predicts = model.predict(images)
+        with chainer.using_config('train', False):
+            predicts = model.predict(images)
         for l, p in zip(labels, predicts):
             if l == p:
                 correct_cnt += 1
