@@ -1,6 +1,8 @@
 import chainer
+import numpy as np
 from chainer import functions as F
 from chainer import links as L
+from chainer import Variable
 from chainer.functions.pooling.average_pooling_2d import average_pooling_2d
 from chainer.functions.pooling.average_pooling_nd import average_pooling_nd
 
@@ -59,6 +61,8 @@ class SoundNet5Layer(chainer.Chain):
         h = reshape(h, (n, channel))
         return h
 
+    def predict(self, x):
+        return F.softmax(self(x), axis=1)
 
 
 # class SoundNet5LayerTrainer(chainer.Chain):

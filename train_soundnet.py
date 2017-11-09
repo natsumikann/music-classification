@@ -36,6 +36,7 @@ if __name__ == '__main__':
     train_dir = '/music'
     train = Dataset(train_dir, debug_mode, True)
     data_num = count_data()
+    print(data_num)
     train, val = split_dataset_random(train, data_num//2)
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
@@ -54,7 +55,6 @@ if __name__ == '__main__':
 
     # モデルの定義
     model = SoundNet5Layer(args.labels)
-    #model_trainer = SoundNet5LayerTrainer(model, args.labels) #trainer消してmodelにすれば良い
     if args.gpu >= 0:
         chainer.cuda.get_device_from_id(args.gpu).use()
         model.to_gpu()
