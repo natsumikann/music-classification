@@ -15,16 +15,25 @@ import soundfile as sf
 
 SAMPLE_RATE = 16000
 TAG_FIELD = 'genre'
+GENRE_TO_VEC = {'rock': 0, 'pop': 1}
 
 class Dataset(chainer.dataset.DatasetMixin):
     SOUND_SHAPE = (1, 1, 5 * SAMPLE_RATE) #5 seconds
 
     def __init__(self, root_dir, debug, print_name=False):
-        self._paths = glob(os.path.join(root_dir, '*/*/*.flac'))
+        paths = glob(os.path.join(root_dir, '*/*/*.flac'))
         self.tag_dict = read_csv()
+        self._paths = []
         self.labels = {}
-        for file in self._paths:
-            self.labels[file] = self.tag_dict[FLAC(file)[TAG_FIELD]]
+        for i, file in enumerate(paths):
+            tags = FLAC(file)
+            tag = tags.get(TAG_FIELD)
+            if tag == None:
+                continue
+            label = self.tag_dict[tag[0]]
+            self._paths.append(file)
+            self.labels[file] = GENRE_TO_VEC[label]
+        print(len(self._paths), len(self.labels))
         self.debug = debug
         self.print_name = print_name
 
@@ -37,7 +46,7 @@ class Dataset(chainer.dataset.DatasetMixin):
         path = self._paths[i]
         if self.print_name:
             print(path)
-        samplerate, raw_sound = sf.read(path[i])
+        raw_sound, samplerate = sf.read(path)
         raw_sound = raw_sound.T
         raw_sound = librosa.to_mono(raw_sound)
         raw_sound = librosa.resample(raw_sound, samplerate, SAMPLE_RATE)
@@ -53,6 +62,8 @@ class Dataset(chainer.dataset.DatasetMixin):
         sound[_slice] = raw_sound[_slice]
 
         sound += np.random.random((self.SOUND_SHAPE)) / 10  # 1*1*5*44100
+        if self.print_name:
+            print('get_example end')
         return sound, self.get_label_from_path(path)
 
     def get_label_from_path(self, file):   #いらない

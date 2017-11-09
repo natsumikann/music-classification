@@ -19,9 +19,9 @@ from Dataset_ta import ValModeEvaluator
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batchsize', type=int, default=16)
+    parser.add_argument('--batchsize', type=int, default=4)
     parser.add_argument('--gpu', type=int, default=-1)
-    parser.add_argument('--labels', type=int, default=50)
+    parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
     parser.add_argument('--resume', type=str, default='')
     parser.add_argument('--dry_run', action='store_true', default=False)
@@ -35,9 +35,9 @@ if __name__ == '__main__':
     # データセットイテレーターの定義
     debug_mode = args.dry_run
     train_dir = '/music'
-    train = Dataset(train_dir, debug_mode, False)
+    train = Dataset(train_dir, debug_mode, True)
     data_num = count_data()
-    train, val = split_dataset_random(train, data_num/2)
+    train, val = split_dataset_random(train, data_num//2)
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
     train_iter = chainer.iterators.MultiprocessIterator(
@@ -62,7 +62,6 @@ if __name__ == '__main__':
 
     optimizer = chainer.optimizers.MomentumSGD(lr=1e-2)
     optimizer.setup(model_trainer)
-
     updater = training.StandardUpdater(
         train_iter, optimizer, device=args.gpu)
 
@@ -104,3 +103,5 @@ if __name__ == '__main__':
             extensions.PlotReport(['main/accuracy', 'validation/main/accuracy'],
                                   'epoch', file_name='accuracy.png'),
             trigger=snapshot_interval)
+    with chainer.using_config('train', True):
+        trainer.run()
