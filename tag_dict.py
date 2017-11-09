@@ -3,11 +3,10 @@
 from mutagen.flac import FLAC
 import glob
 import csv
+import os
 
-path = '/music/'
-
-def write_csv():
-    files = glob.glob(path + '*/*/*.flac')
+def write_csv(path):
+    files = glob.glob(os.path.join(path, '*/*/*.flac'))
     print(files)
     assert len(files) != 0
     audio = []
@@ -23,9 +22,11 @@ def write_csv():
 
     print(audio)
 
-def count_data():
-    files = glob.glob(path + '*/*/*.flac')
+
+def count_data(path):
+    files = glob.glob(os.path.join(path, '*/*/*.flac'))
     return len(files)
+
 
 def read_csv():
     data = {}

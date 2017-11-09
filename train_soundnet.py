@@ -19,10 +19,12 @@ from Dataset_ta import ValModeEvaluator
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batchsize', type=int, default=30)
+    parser.add_argument('--epoch', '-e', type=int, default=5,
+                        help='Number of sweeps over the mini_cifar to train')
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
-    parser.add_argument('--dataset', '-d', default='/music',
+    parser.add_argument('--dataset', '-d', default='/music/train',
                         help='Directory for train sound_net')
     parser.add_argument('--resume', type=str, default='')
     parser.add_argument('--dry_run', action='store_true', default=False)
@@ -37,7 +39,7 @@ if __name__ == '__main__':
     debug_mode = args.dry_run
     train_dir = args.dataset
     train = Dataset(train_dir, debug_mode, True)
-    data_num = count_data()
+    data_num = count_data(train_dir)
     print(data_num)
     train, val = split_dataset_random(train, data_num//2)
     print('train: {:d} sounds found'.format(len(train)))
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     updater = training.StandardUpdater(
         train_iter, optimizer, device=args.gpu)
 
-    trainer = training.Trainer(updater, (1, 'epoch'), args.out) #num iof epoch 1 temporalily
+    trainer = training.Trainer(updater, (args.epoch, 'epoch'), args.out) #num iof epoch 1 temporalily
 
     trainer.extend(extensions.ExponentialShift('lr', np.power(0.1, 1 / 30)),
                    trigger=(5, 'epoch'))
