@@ -32,7 +32,7 @@ class SoundNet5Layer(chainer.Chain):
             self.fc1 = L.Linear(RegressorOutputValues.SoundOutput, 100)
             self.fc2 = L.Linear(100, out_num)
 
-    def __call__(self, sound, t):
+    def __call__(self, sound, t=None):
         h = F.relu(self.bn1(self.conv1(sound)))
         h = F.max_pooling_2d(h, (1, 8), 8, 0)
         h = F.relu(self.bn2(self.conv2(h)))
@@ -46,12 +46,12 @@ class SoundNet5Layer(chainer.Chain):
         h = F.relu(self.fc1(h))
         h = F.softmax(self.fc2(h))
 
-        t = self.xp.asarray(t, self.xp.int32)
-        loss = F.softmax_cross_entropy(h, t)
-        accuracy = F.accuracy(h, t)
-        chainer.report({'loss': loss}, self)
-        chainer.report({'accuracy': accuracy}, self)
         if chainer.config.train:
+            t = self.xp.asarray(t, self.xp.int32)
+            loss = F.softmax_cross_entropy(h, t)
+            accuracy = F.accuracy(h, t)
+            chainer.report({'loss': loss}, self)
+            chainer.report({'accuracy': accuracy}, self)
             return loss
         return h
 
@@ -62,7 +62,7 @@ class SoundNet5Layer(chainer.Chain):
         return h
 
     def predict(self, x):
-        return F.softmax(self(x), axis=1)
+        return F.argmax(self(x), axis=1).data
 
 
 # class SoundNet5LayerTrainer(chainer.Chain):

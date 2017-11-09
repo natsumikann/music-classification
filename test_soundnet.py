@@ -18,7 +18,7 @@ def main():
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--model', '-m', default='result/sound_net_1',
                         help='Path to the model')
-    parser.add_argument('--dataset', '-d', default='/music/BON JOVI/Tokyo Road',
+    parser.add_argument('--dataset', '-d', default='/music',
                         help='Directory for train sound_net')
     parser.add_argument('--labels', type=int, default=2)
     args = parser.parse_args()
