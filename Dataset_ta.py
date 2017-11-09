@@ -18,7 +18,8 @@ TAG_FIELD = 'genre'
 GENRE_TO_VEC = {'rock': 0, 'pop': 1}
 
 class Dataset(chainer.dataset.DatasetMixin):
-    SOUND_SHAPE = (1, 1, 5 * SAMPLE_RATE) #5 seconds
+    SOUND_LENGTH = 5
+    SOUND_SHAPE = (SOUND_LENGTH * SAMPLE_RATE) #5 seconds
 
     def __init__(self, root_dir, debug=False, print_name=False):
         paths = glob(os.path.join(root_dir, '*.flac'))
@@ -49,21 +50,18 @@ class Dataset(chainer.dataset.DatasetMixin):
         raw_sound, samplerate = sf.read(path)
         raw_sound = raw_sound.T
         raw_sound = librosa.to_mono(raw_sound)
-        raw_sound = librosa.resample(raw_sound, samplerate, SAMPLE_RATE)
+        sound_shape = self.SOUND_LENGTH * samplerate
         max_volume = np.max(raw_sound) * (1 + random.random())
-        raw_sound = raw_sound.astype(np.float32).reshape((1, 1, -1)) / max_volume
-        raw_sound_range = len(raw_sound[0][0]) - self.SOUND_SHAPE[-1]
-        raw_sound = raw_sound[0][0][random.randint(0, raw_sound_range):]
+        raw_sound = raw_sound.astype(np.float32) / max_volume
+        raw_sound_range = len(raw_sound) - sound_shape
+        start = random.randint(0, raw_sound_range)
+        sound = raw_sound[start:start + sound_shape]
         # plt.plot(raw_sound.flatten())
         # plt.savefig('raw.png')
         # plt.close()
-        _slice = [slice(0, np.min((x, y,)), None) for x, y in zip(raw_sound.shape, self.SOUND_SHAPE)]
-        sound = np.zeros(self.SOUND_SHAPE, dtype=np.float32)
-        sound[_slice] = raw_sound[_slice]
-
-        sound += np.random.random((self.SOUND_SHAPE)) / 10  # 1*1*5*44100
-        if self.print_name:
-            print('get_example end')
+        sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
+        sound += np.random.random(self.SOUND_SHAPE) / 10  # 1*1*5*16000
+        sound = sound.reshape((1, 1, -1))
         return sound, self.get_label_from_path(path)
 
     def get_label_from_path(self, file):   #いらない
