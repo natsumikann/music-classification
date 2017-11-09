@@ -2,6 +2,7 @@ import numpy as np
 import chainer
 from scipy.io import wavfile
 from chainer.training import extensions
+from tag_dict import read_csv
 from glob import glob
 from mutagen.flac import FLAC
 import librosa
@@ -20,7 +21,8 @@ class Dataset(chainer.dataset.DatasetMixin):
 
     def __init__(self, root_dir, debug, print_name=False):
         self._paths = glob(os.path.join(root_dir, '*\*\*.flac'))
-        self.labels = {file:FLAC(file)[TAG_FIELD]
+        self.tag_dict = read_csv()
+        self.labels = {file: self.tag_dict[FLAC(file)[TAG_FIELD]]
                        for i, file in enumerate(self._paths)}
         self.debug = debug
         self.print_name = print_name
