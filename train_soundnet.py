@@ -10,11 +10,10 @@ from chainer import training
 from chainer.datasets import split_dataset_random
 from chainer.training import extensions
 
-from config import global_value
 from Regressor import SoundNet5Layer
 from Regressor import SoundNet5LayerTrainer
-from Dataset import Dataset
-from Dataset import ValModeEvaluator
+from Dataset_ta import Dataset
+from Dataset_ta import ValModeEvaluator
 
 
 def parse():
@@ -31,12 +30,10 @@ def parse():
 if __name__ == '__main__':
     args = parse()
 
-    # グローバル変数定義
-    global_value.initialize()
 
     # データセットイテレーターの定義
     debug_mode = args.dry_run
-    train_dir = global_value.train_dir
+    train_dir = '/music'
     train = Dataset(train_dir, debug_mode, False)
     train, val = split_dataset_random(train, 1800)
     print('train: {:d} sounds found'.format(len(train)))
