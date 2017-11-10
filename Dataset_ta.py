@@ -13,7 +13,7 @@ matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import soundfile as sf
 
-SAMPLE_RATE = 16000
+SAMPLE_RATE = 22050
 TAG_FIELD = 'genre'
 GENRE_TO_VEC = {'rock': 0, 'pop': 1}
 
@@ -59,7 +59,8 @@ class Dataset(chainer.dataset.DatasetMixin):
         # plt.plot(raw_sound.flatten())
         # plt.savefig('raw.png')
         # plt.close()
-        sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
+        # sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
+        sound = sound[::2]
         sound += np.random.random(self.SOUND_SHAPE) / 10  # 1*1*5*16000
         sound = sound.reshape((1, 1, -1))
         return sound, self.get_label_from_path(path)
