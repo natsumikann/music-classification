@@ -43,7 +43,7 @@ if __name__ == '__main__':
     train = Dataset(train_dir, debug_mode, True)
     data_num = count_data(train_dir)
     print(data_num)
-    train, val = split_dataset_random(train, int(data_num * 0.9))
+    train, val = split_dataset_random(train, int(data_num * 0.8))
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
     train_iter = chainer.iterators.MultiprocessIterator(
