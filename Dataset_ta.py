@@ -61,7 +61,7 @@ class Dataset(chainer.dataset.DatasetMixin):
         # plt.close()
         # sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
         sound = sound[::2]
-        sound += np.random.random(self.SOUND_SHAPE) / 10  # 1*1*5*16000
+        sound += np.random.random(self.SOUND_SHAPE) / 50  # 1*1*5*16000
         sound = sound.reshape((1, 1, -1))
         return sound, self.get_label_from_path(path)
 
