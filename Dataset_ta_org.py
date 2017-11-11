@@ -1,8 +1,6 @@
 # coding=utf-8
 import numpy as np
 import chainer
-import multiprocessing
-import pickle
 from scipy.io import wavfile
 from chainer.training import extensions
 from tag_dict import read_csv
@@ -43,19 +41,12 @@ class Dataset(chainer.dataset.DatasetMixin):
         self.debug = debug
         self.print_name = print_name
 
-    def get_example(self):
-        print("in get_example")
-        #multiple_paths = [self._paths[i:i+batchsize] for i in range(0, len(self._paths), batchsize)]
-        #print(multiple_paths)
-        multi = np.asarray(range(0, len(self._paths)))
-        processes = max(1, multiprocessing.cpu_count()-1)
-        p = multiprocessing.Pool(processes)
-        return  p.map(self.get_example_single, multi)
 
     def __len__(self):
         return len(self._paths)
 
-    def get_example_single(self, i):
+
+    def get_example(self, i):
         path = self._paths[i]
         if self.print_name:
             print(path)
@@ -75,12 +66,10 @@ class Dataset(chainer.dataset.DatasetMixin):
         sound = sound[::2]
         sound += np.random.random(self.SOUND_SHAPE) / 10
         sound = sound.reshape((1, 1, -1))
-
-        return (sound, self.get_label_from_path(path))
+        return sound, self.get_label_from_path(path)
 
     def get_label_from_path(self, file):   #いらない
         return self.labels[file]
-
 
 
 class ValModeEvaluator(extensions.Evaluator):
