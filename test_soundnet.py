@@ -1,5 +1,5 @@
 import argparse
-
+import multiprocessing
 import matplotlib
 
 matplotlib.use('Agg')
@@ -12,7 +12,7 @@ from Dataset_ta import Dataset
 
 def main():
     parser = argparse.ArgumentParser(description='Practice: SoundNet5Layer')
-    parser.add_argument('--batchsize', '-b', type=int, default=4,
+    parser.add_argument('--batchsize', '-b', type=int, default=16,
                         help='Number of songs in each mini-batch')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
@@ -39,7 +39,8 @@ def main():
     test = Dataset(args.dataset)
     print('test data : {}'.format(len(test)))
 
-    test_iter = chainer.iterators.SerialIterator(test, args.batchsize,
+    test_iter = chainer.iterators.MultiprocessIterator(test, args.batchsize,
+                                                       n_processes=multiprocessing.cpu_count() - 1,
                                                   repeat=False, shuffle=False)
 
     correct_cnt = 0
@@ -53,6 +54,7 @@ def main():
         with chainer.using_config('train', False):
             predicts = model.predict(images)
         for l, p in zip(labels, predicts):
+            # print(correct_cnt)
             if l == p:
                 correct_cnt += 1
 
