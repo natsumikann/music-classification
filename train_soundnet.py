@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # データセットイテレーターの定義
     debug_mode = args.dry_run
     train_dir = args.dataset
-    train = Dataset(train_dir, debug_mode, True)
+    train = Dataset(train_dir, debug_mode, False)
     data_num = count_data(train_dir)
     print(data_num)
     train, val = split_dataset_random(train, int(data_num * 0.8))
