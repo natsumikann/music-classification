@@ -3,8 +3,10 @@ import matplotlib
 matplotlib.use("Agg")
 import argparse
 import numpy as np
+import multiprocessing
 
 import chainer
+from chainer.datasets import get_cross_validation_datasets_random
 from chainer import serializers
 from chainer import training
 from chainer.datasets import split_dataset_random
@@ -41,13 +43,13 @@ if __name__ == '__main__':
     train = Dataset(train_dir, debug_mode, True)
     data_num = count_data(train_dir)
     print(data_num)
-    train, val = split_dataset_random(train, data_num//2)
+    train, val = split_dataset_random(train, int(data_num * 0.9))
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
     train_iter = chainer.iterators.MultiprocessIterator(
         train,
         args.batchsize,
-        n_processes=4,
+        n_processes=multiprocessing.cpu_count() - 1,
         repeat=True,
         shuffle=True
     )
