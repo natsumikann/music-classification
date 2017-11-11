@@ -37,4 +37,5 @@ def read_csv():
     return data
 
 if __name__ == '__main__':
-    print(read_csv())
+    write_csv("/music-tmp")
+    print(count_data("/music-tmp"))

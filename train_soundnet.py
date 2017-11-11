@@ -1,9 +1,9 @@
 import matplotlib
-
 matplotlib.use("Agg")
 import argparse
 import numpy as np
-
+import time
+import multiprocessing
 import chainer
 from chainer import serializers
 from chainer import training
@@ -24,7 +24,7 @@ def parse():
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
-    parser.add_argument('--dataset', '-d', default='/music/train',
+    parser.add_argument('--dataset', '-d', default='/music-tmp',
                         help='Directory for train sound_net')
     parser.add_argument('--resume', type=str, default='')
     parser.add_argument('--dry_run', action='store_true', default=False)
@@ -32,13 +32,15 @@ def parse():
 
 
 if __name__ == '__main__':
+    start = time.time()
     args = parse()
 
 
     # データセットイテレーターの定義
     debug_mode = args.dry_run
     train_dir = args.dataset
-    train = Dataset(train_dir, debug_mode, True)
+    train = Dataset(train_dir, debug_mode, True).get_example()
+    print(train[1])
     data_num = count_data(train_dir)
     print(data_num)
     train, val = split_dataset_random(train, data_num//2)
@@ -47,7 +49,7 @@ if __name__ == '__main__':
     train_iter = chainer.iterators.MultiprocessIterator(
         train,
         args.batchsize,
-        n_processes=4,
+        n_processes=multiprocessing.cpu_count() - 1,
         repeat=True,
         shuffle=True
     )
@@ -108,3 +110,6 @@ if __name__ == '__main__':
             trigger=snapshot_interval)
     with chainer.using_config('train', True):
         trainer.run()
+
+    elapsed_time = time.time() - start
+    print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
