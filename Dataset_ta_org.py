@@ -18,6 +18,7 @@ SAMPLE_RATE = 22050
 TAG_FIELD = 'genre'
 GENRE_TO_VEC = {'rock': 0, 'pop': 1}
 
+
 class Dataset(chainer.dataset.DatasetMixin):
     SOUND_LENGTH = 5
     SOUND_SHAPE = (SOUND_LENGTH * SAMPLE_RATE) #5 seconds
