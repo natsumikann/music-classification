@@ -61,9 +61,14 @@ class Dataset(chainer.dataset.DatasetMixin):
         # plt.close()
         # sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
         sound = sound[::2]
-        sound += np.random.random(self.SOUND_SHAPE) / 50  # 1*1*5*16000
-        sound = sound.reshape((1, 1, -1))
-        return sound, self.get_label_from_path(path)
+        ssound = librosa.feature.melspectrogram(sound, sr=samplerate/2)
+        ssound = ssound.astype(np.float32)
+        # print(sound.shape)
+        # print(ssound.shape)
+        ssound += np.random.random(ssound.shape) / 50  # 1*1*5*16000
+        ssound = ssound.reshape((1, 128, -1))
+        # print(ssound.shape)
+        return ssound, self.get_label_from_path(path)
 
     def get_label_from_path(self, file):   #いらない
         return self.labels[file]
