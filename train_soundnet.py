@@ -11,20 +11,20 @@ from chainer.datasets import split_dataset_random
 from chainer.training import extensions
 
 from tag_dict import count_data
-from Regressor import SoundNet5Layer
-from Dataset_ta import Dataset
-from Dataset_ta import ValModeEvaluator
+from Regressor_org import SoundNet5Layer
+from Dataset_ta_org import Dataset
+from Dataset_ta_org import ValModeEvaluator
 
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batchsize', type=int, default=30)
-    parser.add_argument('--epoch', '-e', type=int, default=5,
+    parser.add_argument('--batchsize', type=int, default=200)
+    parser.add_argument('--epoch', '-e', type=int, default=50,
                         help='Number of sweeps over the mini_cifar to train')
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--labels', type=int, default=2)
     parser.add_argument('--out', default='result')
-    parser.add_argument('--dataset', '-d', default='/music-tmp',
+    parser.add_argument('--dataset', '-d', default='/music',
                         help='Directory for train sound_net')
     parser.add_argument('--resume', type=str, default='')
     parser.add_argument('--dry_run', action='store_true', default=False)
@@ -39,11 +39,11 @@ if __name__ == '__main__':
     # データセットイテレーターの定義
     debug_mode = args.dry_run
     train_dir = args.dataset
-    train = Dataset(train_dir, debug_mode, True).get_example()
+    train = Dataset(train_dir, debug_mode, True)
     print(train[1])
     data_num = count_data(train_dir)
     print(data_num)
-    train, val = split_dataset_random(train, data_num//2)
+    train, val = split_dataset_random(train, int(data_num*0.8))
     print('train: {:d} sounds found'.format(len(train)))
     print('val: {:d} movies found'.format(len(val)))
     train_iter = chainer.iterators.MultiprocessIterator(
@@ -106,7 +106,7 @@ if __name__ == '__main__':
             trigger=snapshot_interval)
         trainer.extend(
             extensions.PlotReport(['main/accuracy', 'validation/main/accuracy'],
-                                  'epoch', file_name='accuracy.png'),
+                                  'epoch', file_name='accuracy_6layers_dropout.png'),
             trigger=snapshot_interval)
     with chainer.using_config('train', True):
         trainer.run()

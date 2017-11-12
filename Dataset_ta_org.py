@@ -17,7 +17,6 @@ import soundfile as sf
 SAMPLE_RATE = 22050
 TAG_FIELD = 'genre'
 GENRE_TO_VEC = {'rock': 0, 'pop': 1}
-batchsize = 30 #TODO 変更する
 
 class Dataset(chainer.dataset.DatasetMixin):
     SOUND_LENGTH = 5

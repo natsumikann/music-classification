@@ -33,6 +33,7 @@ class Dataset(chainer.dataset.DatasetMixin):
         for i, file in enumerate(paths):
             tags = FLAC(file)
             tag = tags.get(TAG_FIELD)
+            print(tag)
             if tag == None:
                 continue
             label = self.tag_dict[tag[0]]

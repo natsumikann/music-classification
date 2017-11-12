@@ -1,22 +1,22 @@
 import argparse
-
+import multiprocessing
 import matplotlib
 
 matplotlib.use('Agg')
 import chainer
-from Regressor import SoundNet5Layer
-from Dataset_ta import Dataset
+from Regressor_org import SoundNet5Layer
+from Dataset_ta_org import Dataset
 
 # TODO add test data
 # TODO complete dataset_args
 
 def main():
     parser = argparse.ArgumentParser(description='Practice: SoundNet5Layer')
-    parser.add_argument('--batchsize', '-b', type=int, default=4,
+    parser.add_argument('--batchsize', '-b', type=int, default=100,
                         help='Number of songs in each mini-batch')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
-    parser.add_argument('--model', '-m', default='result/sound_net_1',
+    parser.add_argument('--model', '-m', default='result/sound_net_10',
                         help='Path to the model')
     parser.add_argument('--dataset', '-d', default='/music/test',
                         help='Directory for train sound_net')
@@ -39,7 +39,7 @@ def main():
     test = Dataset(args.dataset)
     print('test data : {}'.format(len(test)))
 
-    test_iter = chainer.iterators.SerialIterator(test, args.batchsize,
+    test_iter = chainer.iterators.MultiprocessIterator(test, args.batchsize, n_processes=multiprocessing.cpu_count() - 1,
                                                   repeat=False, shuffle=False)
 
     correct_cnt = 0
