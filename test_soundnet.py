@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--dataset', '-d', default='/music/test',
                         help='Directory for train sound_net')
     parser.add_argument('--labels', type=int, default=2)
+    parser.add_argument('--demo', type=bool, default=False)
     args = parser.parse_args()
 
     print('GPU: {}'.format(args.gpu))
@@ -52,11 +53,14 @@ def main():
         labels = model.xp.array([label for _, label in batch])
         with chainer.using_config('train', False):
             predicts = model.predict(images)
-        for l, p in zip(labels, predicts):
+        for i, l, p in zip(images, labels, predicts):
             if l == p:
                 correct_cnt += 1
+            if args.demo == True:
+                print("label:", l, "predict:", p)
 
-    print('accuracy : {}'.format(correct_cnt/len(test)))
+    if args.demo == False:
+        print('accuracy : {}'.format(correct_cnt/len(test)))
 
 
 if __name__ == '__main__':

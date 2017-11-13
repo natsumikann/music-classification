@@ -24,12 +24,18 @@ class Dataset(chainer.dataset.DatasetMixin):
     SOUND_SHAPE = (SOUND_LENGTH * SAMPLE_RATE) #5 seconds
 
     def __init__(self, root_dir, debug=False, print_name=False):
-        paths = glob(os.path.join(root_dir, '*/*/*.flac'))
+        dir = root_dir.split("/")
+        paths = []
+        if(len(dir) == 6):
+            paths.append(root_dir)
+        else:
+            paths = glob(os.path.join(root_dir, '*/*/*.flac'))
         self.tag_dict = read_csv()
         self._paths = []
         self.labels = {}
         for i, file in enumerate(paths):
             tags = FLAC(file)
+            print(tags)
             tag = tags.get(TAG_FIELD)
             if tag == None:
                 continue
