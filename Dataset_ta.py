@@ -1,6 +1,5 @@
 import numpy as np
 import chainer
-from scipy.io import wavfile
 from chainer.training import extensions
 from tag_dict import read_csv
 from glob import glob
@@ -15,7 +14,7 @@ import soundfile as sf
 
 SAMPLE_RATE = 22050
 TAG_FIELD = 'genre'
-GENRE_TO_VEC = {'rock': 0, 'pop': 1}
+GENRE_TO_VEC = {'rock': 0, 'pop': 1} # pop, rockのジャンルをラベル（ベクトル）に変換する辞書
 
 class Dataset(chainer.dataset.DatasetMixin):
     SOUND_LENGTH = 5
@@ -30,8 +29,10 @@ class Dataset(chainer.dataset.DatasetMixin):
             tags = FLAC(file)
             tag = tags.get(TAG_FIELD)
             if tag == None:
+                # genreタグが含まれていなければ読み飛ばす
                 continue
             label = self.tag_dict[tag[0]]
+            # 音楽ファイルのパスとラベルをデータセットに追加
             self._paths.append(file)
             self.labels[file] = GENRE_TO_VEC[label]
         print(len(self._paths), len(self.labels))
@@ -47,30 +48,44 @@ class Dataset(chainer.dataset.DatasetMixin):
         path = self._paths[i]
         if self.print_name:
             print(path)
+
+        # 音楽ファイルを読み込みモノラル化
         raw_sound, samplerate = sf.read(path)
         raw_sound = raw_sound.T
         raw_sound = librosa.to_mono(raw_sound)
+
+        # 音楽データSOUND_LENGTH秒分のshape
         sound_shape = self.SOUND_LENGTH * samplerate
+
+        # 音量正規化（ランダムノイズあり）
         max_volume = np.max(raw_sound) * (1 + random.random())
         raw_sound = raw_sound.astype(np.float32) / max_volume
+
+        # 音楽をランダムの位置からSOUND_LENGTH秒だけ切り出す
         raw_sound_range = len(raw_sound) - sound_shape
         start = random.randint(0, raw_sound_range)
         sound = raw_sound[start:start + sound_shape]
         # plt.plot(raw_sound.flatten())
         # plt.savefig('raw.png')
         # plt.close()
+
+        # データ量を減らすためダウンサンプル
         # sound = librosa.resample(sound, samplerate, SAMPLE_RATE)
         sound = sound[::2]
+
+        # メルスペクトログラムをとる
         ssound = librosa.feature.melspectrogram(sound, sr=samplerate/2)
         ssound = ssound.astype(np.float32)
-        # print(sound.shape)
-        # print(ssound.shape)
-        ssound += np.random.random(ssound.shape) / 50  # 1*1*5*16000
+
+        # ホワイトノイズ付加
+        ssound += np.random.random(ssound.shape) / 50
+
+        # データ整形
         ssound = ssound.reshape((1, 128, -1))
-        # print(ssound.shape)
         return ssound, self.get_label_from_path(path)
 
-    def get_label_from_path(self, file):   #いらない
+
+    def get_label_from_path(self, file):
         return self.labels[file]
 
 
