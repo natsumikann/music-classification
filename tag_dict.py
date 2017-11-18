@@ -7,6 +7,11 @@ import os
 import sys
 
 def write_csv(path):
+    '''
+    与えられたPATH内の、有効なTagが付いたFLACファイルからすべての"genre"タグの一覧を生成
+    :param path: 音楽ファイルの格納されたトップディレクトリ アルバムアーティスト/アルバム/ファイル の階層
+    :return: None
+    '''
     files = glob.glob(os.path.join(path, '*/*/*.flac'))
     # print(files)
     assert len(files) != 0
@@ -30,6 +35,12 @@ def write_csv(path):
 
 
 def search_tag(path, tag):
+    '''
+    与えられた"genre"タグの値がどのファイルに属するかの一覧を表示
+    :param path: 音楽ファイルの格納されたトップディレクトリ アルバムアーティスト/アルバム/ファイル の階層
+    :param tag: 検索対象の"genre"タグ
+    :return: None
+    '''
     files = glob.glob(os.path.join(path, '*/*/*.flac'))
     # print(files)
     assert len(files) != 0
@@ -42,11 +53,20 @@ def search_tag(path, tag):
 
 
 def count_data(path):
+    '''
+    与えられたディレクトリ以下の音楽ファイルの総数を返す。
+    :param path: 音楽ファイルの格納されたトップディレクトリ アルバムアーティスト/アルバム/ファイル の階層
+    :return: 与えられたディレクトリ以下の音楽ファイルの総数
+    '''
     files = glob.glob(os.path.join(path, '*/*/*.flac'))
     return len(files)
 
 
 def read_csv():
+    '''
+    write_csv()関数で生成されたCSVファイルを編集し各"genre"タグと"pop", "rock"の対応付けを行ったものをパース
+    :return: "genre"タグをキーとし"pop"または"rock" をvalueとする辞書
+    '''
     data = {}
     with open('tag_dict.csv', 'r') as f:
         reader = csv.reader(f, lineterminator='\n')

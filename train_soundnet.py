@@ -70,7 +70,7 @@ if __name__ == '__main__':
     updater = training.StandardUpdater(
         train_iter, optimizer, device=args.gpu)
 
-    trainer = training.Trainer(updater, (args.epoch, 'epoch'), args.out) #num iof epoch 1 temporalily
+    trainer = training.Trainer(updater, (args.epoch, 'epoch'), args.out)
 
     trainer.extend(extensions.ExponentialShift('lr', np.power(0.1, 1 / 30)),
                    trigger=(5, 'epoch'))
