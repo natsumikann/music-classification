@@ -28,7 +28,7 @@ class SoundNet5Layer(chainer.Chain):
             self.bn4 = L.BatchNormalization(256)
             self.conv5 = L.Convolution2D(256, self.SoundOutput, (1, 16),
                                          12, (0, 4))
-            self.bn5 = L.BatchNormalization(self.SoundOutput) #２次元で出力 Linear 第一引数 none
+            self.bn5 = L.BatchNormalization(self.SoundOutput)
             self.fc1 = L.Linear(RegressorOutputValues.SoundOutput, 100)
             self.fc2 = L.Linear(100, out_num)
 
