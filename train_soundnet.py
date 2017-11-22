@@ -11,7 +11,7 @@ from chainer.datasets import split_dataset_random
 from chainer.training import extensions
 
 from tag_dict import count_data
-from Regressor_org import SoundNet5Layer
+from Regressor_6layers import SoundNet5Layer
 from Dataset_ta_org import Dataset
 from Dataset_ta_org import ValModeEvaluator
 
