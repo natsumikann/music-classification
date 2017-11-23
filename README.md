@@ -14,13 +14,13 @@ CNNを用いた楽曲分類を試みた。詳細はスライドにある通り�
     学習を行う。  
     * test_soundnet.py  
     テストを行う。  
-    * Regressor.py, Regressor_6layers.py 
-    ネットワークの定義がされている。 
-    * tag_dict.py 
-    もともと楽曲についている楽曲のジャンルのタグは様々な種類のものがあるのでpopかrockのどちらかに変換する。その変換のためのテーブルをCSVで出力する。 
-    * tag_dict.csv 
+    * Regressor.py, Regressor_6layers.py  
+    ネットワークの定義がされている。  
+    * tag_dict.py  
+    もともと楽曲についている楽曲のジャンルのタグは様々な種類のものがあるのでpopかrockのどちらかに変換する。その変換のためのテーブルをCSVで出力する。  
+    * tag_dict.csv  
     上のファイルを実行することで出力されたCSVファイル。これをtrainやtestで読み込んで楽曲のデータのタグを変換する。  
-    * Dataset_ta.py  
+    * Dataset_ta.py  
     楽曲の5秒ずつ切り出してミニバッチ化し、train/testでデータとして利用する。  
 4. コードの実行方法(各ブランチ共通)  
     * 学習　　
