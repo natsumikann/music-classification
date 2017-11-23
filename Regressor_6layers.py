@@ -27,25 +27,26 @@ class SoundNet5Layer(chainer.Chain):
             self.conv5 = L.Convolution2D(256, 512, (1, 4),
                                          2, (0, 2))
             self.bn5 = L.BatchNormalization(512)
-            self.conv6 = L.Convolution2D(256, self.SoundOutput, (1, 16),
+            self.conv6 = L.Convolution2D(512, 64, (1, 16),
                                          12, (0, 4))
-            self.bn6 = L.BatchNormalization(self.SoundOutput)
-            self.fc1 = L.Linear(RegressorOutputValues.SoundOutput, 100)
+            self.bn6 = L.BatchNormalization(64)
+            self.fc1 = L.Linear(64, 100)
             self.fc2 = L.Linear(100, out_num)
 
     def __call__(self, sound, t=None):
-        h = F.relu(self.bn1(self.conv1(sound)))
-        with chainer.using_config("train", True):
+        h = F.relu(self.conv1(sound))
+        if chainer.using_config("train", True):
             h = F.dropout(h, ratio = 0.5)
         h = F.max_pooling_2d(h, (1, 8), 8, 0)
-        h = F.relu(self.bn2(self.conv2(h)))
-        with chainer.using_config("train", True):
+        h = F.relu(self.conv2(h))
+        if chainer.using_config("train", True):
             h = F.dropout(h, ratio = 0.2)
         h = F.max_pooling_2d(h, (1, 8), 8, 0)
         h = F.relu(self.bn3(self.conv3(h)))
         h = F.max_pooling_2d(h, (1, 8), 8, 0)
         h = F.relu(self.bn4(self.conv4(h)))
         h = F.relu(self.bn5(self.conv5(h)))
+        h = F.relu(self.bn6(self.conv6(h)))
         h = self._global_average_pooling_nd(h)
 
         h = F.relu(self.fc1(h))

@@ -4,7 +4,7 @@ import matplotlib
 
 matplotlib.use('Agg')
 import chainer
-from Regressor_org import SoundNet5Layer
+from Regressor_6layers import SoundNet5Layer
 from Dataset_ta_org import Dataset
 
 # TODO add test data
