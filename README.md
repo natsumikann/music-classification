@@ -26,7 +26,7 @@
 
 4. コードの実行方法(各ブランチ共通)
     * 学習  
-    `python train_soundnet.py`でファイルを実行して下さい。`--gpu 1`のようにGPUのIDを指定できるようになっています。 
+    カレントディレクトリと同じ階層にmusicディレクトリを用意。その下のディレクトリを（アーティスト名）＞（アルバム名）＞（曲名）のようにしてflac形式のtrain用楽曲データを配置する。`python train_soundnet.py`でファイルを実行。 
     
     * 分類  
-    `python test_soundnet.py`でファイルを実行して下さい。`--gpu 1`のようにGPUのIDを指定できるようになっています。  
+    musicディレクトリの下にtestディレクトリを用意し、その下に学習時と同様にディレクトリを作る。`python test_soundnet.py`でファイルを実行。
