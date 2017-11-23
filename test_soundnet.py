@@ -4,11 +4,9 @@ import matplotlib
 
 matplotlib.use('Agg')
 import chainer
-from Regressor_6layers import SoundNet5Layer
-from Dataset_ta_org import Dataset
+from Regressor import SoundNet5Layer
+from Dataset import Dataset
 
-# TODO add test data
-# TODO complete dataset_args
 
 def main():
     parser = argparse.ArgumentParser(description='Practice: SoundNet5Layer')
