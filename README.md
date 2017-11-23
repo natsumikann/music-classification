@@ -26,4 +26,4 @@ CNNを用いた楽曲分類を試みた。詳細はスライドにある通り�
     * 学習　　 
     `python train_soundnet.py`でファイルを実行して下さい。`--gpu 1`のようにGPUのIDを指定できるようになっています。   
     * 分類  
-    `python test_soundnet.py`でファイルを実行して下さい。`--gpu 1`のようにGPUのIDを指定できるようになっています。  
+    `python test_soundnet.py`でファイルを実行して下さい。`--gpu 1`のようにGPUのIDを指定できるようになっています。  
