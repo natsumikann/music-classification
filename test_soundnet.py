@@ -40,9 +40,10 @@ def main():
     test = Dataset(args.dataset)
     print('test data : {}'.format(len(test)))
 
-    test_iter = chainer.iterators.MultiprocessIterator(test, args.batchsize, n_processes=multiprocessing.cpu_count() - 1,
-                                                  repeat=False, shuffle=False)
-
+    test_iter = chainer.iterators.MultiprocessIterator(test, args.batchsize,
+                                                       n_processes=multiprocessing.cpu_count() - 1,
+                                                       repeat=False, shuffle=False)
+    # testデータセット内のファイルについて予測と実際のラベルが適合した個数を数える
     correct_cnt = 0
     while True:
         try:
